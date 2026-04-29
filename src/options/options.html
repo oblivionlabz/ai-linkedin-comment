@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Comment Drafter — Options</title>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --panel: #141414;
+      --border: #2a2a2a;
+      --fg: #f5f5f5;
+      --muted: #8a8a8a;
+      --accent: #f5f5f5;
+    }
+    * { box-sizing: border-box; }
+    html, body { background: var(--bg); color: var(--fg); margin: 0; }
+    body {
+      font: 14px/1.5 system-ui, -apple-system, sans-serif;
+      padding: 40px 24px;
+    }
+    main { max-width: 640px; margin: 0 auto; }
+    h1 {
+      font-size: 22px; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 4px;
+    }
+    h1 + p { color: var(--muted); margin: 0 0 32px; font-size: 13px; }
+    fieldset {
+      border: 1px solid var(--border); border-radius: 6px; padding: 18px;
+      margin: 0 0 18px; background: var(--panel);
+    }
+    legend {
+      padding: 0 8px; font-size: 11px;
+      letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted);
+    }
+    label { display: block; margin: 12px 0 4px; font-size: 12px; color: var(--muted); }
+    input[type=text], input[type=password], input[type=url], select {
+      width: 100%; background: #000; color: var(--fg); border: 1px solid var(--border);
+      border-radius: 4px; padding: 8px 10px; font: inherit;
+    }
+    input[type=range] { width: 100%; }
+    .row { display: flex; gap: 12px; align-items: center; }
+    .row > * { flex: 1; }
+    button {
+      background: var(--accent); color: #000; border: 0; border-radius: 4px;
+      padding: 8px 14px; font: 600 11px/1 inherit; letter-spacing: 0.12em;
+      text-transform: uppercase; cursor: pointer;
+    }
+    button:hover { filter: brightness(0.92); }
+    button.secondary { background: transparent; color: var(--fg); border: 1px solid var(--border); }
+    .status { margin-top: 10px; font-size: 12px; color: var(--muted); min-height: 18px; }
+    .ok { color: #6bd58a; }
+    .err { color: #ff7777; }
+    .pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; background: #000; border: 1px solid var(--border); border-radius: 3px; font-size: 11px; color: var(--muted); }
+    .provider { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 0; }
+    .provider label { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; margin: 0; color: var(--fg); }
+    .provider input[type=radio]:checked + span { color: var(--fg); font-weight: 600; }
+    .provider input[type=radio] { accent-color: var(--fg); }
+    code { background: #000; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); font-size: 12px; }
+    .footer { color: var(--muted); font-size: 12px; margin-top: 32px; border-top: 1px solid var(--border); padding-top: 16px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>AI Comment Drafter for LinkedIn</h1>
+  <p>BYOK — your API key never leaves your browser. The extension never auto-posts.</p>
+
+  <fieldset>
+    <legend>Provider</legend>
+    <div class="provider">
+      <label><input type="radio" name="provider" value="anthropic" /> <span>Anthropic</span></label>
+      <label><input type="radio" name="provider" value="openai" /> <span>OpenAI</span></label>
+      <label><input type="radio" name="provider" value="ollama" /> <span>Ollama (local)</span></label>
+    </div>
+
+    <div id="anthropic-fields">
+      <label for="anthropicKey">Anthropic API key <span class="pill">sk-ant-…</span></label>
+      <input type="password" id="anthropicKey" autocomplete="off" />
+    </div>
+
+    <div id="openai-fields" hidden>
+      <label for="openaiKey">OpenAI API key <span class="pill">sk-…</span></label>
+      <input type="password" id="openaiKey" autocomplete="off" />
+    </div>
+
+    <div id="ollama-fields" hidden>
+      <div class="row">
+        <div>
+          <label for="ollamaEndpoint">Ollama endpoint</label>
+          <input type="url" id="ollamaEndpoint" placeholder="http://localhost:11434" />
+        </div>
+        <div>
+          <label for="ollamaModel">Model</label>
+          <input type="text" id="ollamaModel" placeholder="qwen2.5:3b" />
+        </div>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:14px">
+      <button id="test">Test connection</button>
+      <button class="secondary" id="save" type="button">Save</button>
+    </div>
+    <div class="status" id="status"></div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Drafting defaults</legend>
+    <label for="defaultTone">Default tone</label>
+    <select id="defaultTone">
+      <option value="curious">Curious — asks one specific question</option>
+      <option value="building">Building-on — extends the post</option>
+      <option value="disagreeing">Disagreeing — polite pushback</option>
+      <option value="concise">Concise — 2-3 sentences</option>
+      <option value="anecdote">Anecdote — relevant personal story</option>
+    </select>
+
+    <label for="maxWords">Max draft length: <span id="maxWordsLabel">80</span> words</label>
+    <input type="range" id="maxWords" min="40" max="200" step="10" value="80" />
+
+    <label for="signature">Optional signoff (rarely useful)</label>
+    <input type="text" id="signature" placeholder="" />
+  </fieldset>
+
+  <p class="footer">
+    Privacy: this extension stores your config only in <code>chrome.storage.local</code>.
+    Drafts are generated by direct calls to your chosen provider. No telemetry.
+    Keyboard shortcut: <code>Ctrl+Shift+L</code> (<code>⌘+Shift+L</code> on Mac) when a comment box is focused.
+  </p>
+</main>
+<script src="options.js"></script>
+</body>
+</html>

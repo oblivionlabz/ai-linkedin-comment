@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="OblivionLabz" />
+  <meta name="dcterms.date" content="2026-04-28" />
+  <title>AI Comment Drafter for LinkedIn — Setup Guide</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">AI Comment Drafter for LinkedIn — Setup Guide</h1>
+<p class="author">OblivionLabz</p>
+<p class="date">2026-04-28</p>
+</header>
+<h1 id="setup-guide">Setup Guide</h1>
+<p>A deeper companion to the README. Read this if you’re setting up
+beyond the 30-second install, or if you bought this pack to fork and
+resell it.</p>
+<hr />
+<h2 id="install-load-unpacked">1. Install — Load Unpacked</h2>
+<p>The extension ships as source. There is no published Chrome Web Store
+listing for the unmodified version. You install it as an unpacked
+extension during development, and ship your own forked version to the
+Web Store if you want a polished distribution path.</p>
+<p><strong>Steps:</strong></p>
+<ol type="1">
+<li>Unzip the source pack into a folder you control. Suggested path:
+<code>~/projects/ai-linkedin-comment/</code>.</li>
+<li>In Chrome, visit <code>chrome://extensions</code>.</li>
+<li>Toggle <strong>Developer mode</strong> to ON (top-right of the
+page).</li>
+<li>Click <strong>Load unpacked</strong> and select the folder
+containing <code>manifest.json</code>.</li>
+<li>Confirm the extension card appears with a black “AI” icon and the
+name “AI Comment Drafter for LinkedIn.”</li>
+</ol>
+<p>If you change source files, click the reload icon on the extension
+card to pick up changes.</p>
+<hr />
+<h2 id="configure-anthropic">2. Configure Anthropic</h2>
+<p>Anthropic is the recommended provider for production drafting. Best
+quality-to-cost ratio at the time of writing.</p>
+<ol type="1">
+<li>Sign in at <a href="https://console.anthropic.com"
+class="uri">https://console.anthropic.com</a>.</li>
+<li>Visit <strong>Settings → API Keys</strong>, click <strong>Create
+Key</strong>, name it (e.g. <code>linkedin-drafter</code>), copy.</li>
+<li>In the extension, click the icon → <strong>Options</strong>.</li>
+<li>Under <strong>Provider</strong>, click
+<strong>Anthropic</strong>.</li>
+<li>Paste the key (starts with <code>sk-ant-...</code>) into
+<strong>Anthropic API key</strong>.</li>
+<li>Click <strong>Test connection</strong>. You want <strong>Connection
+OK</strong>.</li>
+<li>Click <strong>Save</strong>.</li>
+</ol>
+<p>Cost notes: - Default model: <code>claude-haiku-4-5</code>. Roughly
+200 input tokens + 120 output tokens per draft. - At Anthropic Haiku
+pricing (subject to change), expect ~$0.0007 per draft, or roughly
+<strong>$1 per 1,400 drafts</strong>. Your mileage will vary.</p>
+<p>If you want a different Claude model, edit the constant
+<code>ANTHROPIC_MODEL</code> in <code>src/background/llm.js</code>.</p>
+<hr />
+<h2 id="configure-openai">3. Configure OpenAI</h2>
+<ol type="1">
+<li>Sign in at <a href="https://platform.openai.com"
+class="uri">https://platform.openai.com</a>.</li>
+<li>Visit <strong>API keys</strong>, create a new key, copy.</li>
+<li>Options page → <strong>OpenAI</strong> → paste key (starts with
+<code>sk-...</code>).</li>
+<li>Test → Save.</li>
+</ol>
+<p>Default model: <code>gpt-4o-mini</code>. Edit
+<code>OPENAI_MODEL</code> in <code>src/background/llm.js</code> to
+upgrade.</p>
+<p>Cost notes: GPT-4o-mini lands at roughly <strong>$0.0003 per
+draft</strong>. Cheaper than Anthropic Haiku per call, slightly worse at
+the “concise” and “anecdote” tones in our testing.</p>
+<hr />
+<h2 id="configure-ollama">4. Configure Ollama</h2>
+<p>Ollama runs models on your own machine. Zero per-call cost. Slower
+first-token than the cloud APIs but plenty fast for comment drafting
+once the model is warm.</p>
+<h3 id="macos">macOS</h3>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install ollama</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ollama</span> serve <span class="kw">&amp;</span>       <span class="co"># or run as a background service via launchd</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">ollama</span> pull qwen2.5:3b</span></code></pre></div>
+<h3 id="linux">Linux</h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://ollama.com/install.sh <span class="kw">|</span> <span class="fu">sh</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ollama</span> pull qwen2.5:3b</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Ollama installs as a systemd unit on most distros. Verify:</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> status ollama</span></code></pre></div>
+<h3 id="windows-wsl">Windows + WSL</h3>
+<p>Native Windows installer: <a
+href="https://ollama.com/download/windows"
+class="uri">https://ollama.com/download/windows</a>. Or use WSL2 + the
+Linux instructions above.</p>
+<p>If running in WSL, Chrome on Windows won’t see
+<code>localhost:11434</code> by default. Add a Windows host-side port
+forward:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>netsh interface portproxy add v4tov4 listenport<span class="op">=</span><span class="dv">11434</span> listenaddress<span class="op">=</span><span class="dv">127.0</span><span class="op">.</span><span class="dv">0.1</span> connectport<span class="op">=</span><span class="dv">11434</span> connectaddress<span class="op">=$(</span>wsl hostname <span class="op">-</span>I<span class="op">)</span></span></code></pre></div>
+<h3 id="configure-in-the-extension">Configure in the extension</h3>
+<ol type="1">
+<li>Options page → <strong>Ollama (local)</strong>.</li>
+<li><strong>Endpoint</strong> stays
+<code>http://localhost:11434</code>.</li>
+<li><strong>Model</strong>: <code>qwen2.5:3b</code> is a good default.
+Other strong picks: <code>llama3.2:3b</code> (similar size, different
+style), <code>qwen2.5:7b</code> (better quality, ~2x slower on commodity
+laptops).</li>
+<li>Test → Save.</li>
+</ol>
+<p>If the test fails, run
+<code>curl http://localhost:11434/api/tags</code> from your terminal. If
+that fails, Ollama isn’t reachable from your browser.</p>
+<hr />
+<h2 id="tone-presets-when-to-use-which">5. Tone Presets — When to Use
+Which</h2>
+<p>Each tone is a system prompt that shapes the draft. Pick based on the
+<em>post you’re commenting on</em> and the <em>signal you want to
+send</em>.</p>
+<ul>
+<li><strong>Curious</strong> — best on data/research/announcement posts.
+The implicit value: you read carefully and have a follow-up question.
+Highest reply rate from authors.</li>
+<li><strong>Building-on</strong> — best on opinion or playbook posts.
+You’re saying “yes, and here’s the next layer.” Builds your reputation
+as a peer.</li>
+<li><strong>Disagreeing</strong> — best when you genuinely disagree and
+have a specific counter. Higher engagement than agreement, but only when
+the counter is concrete. Use sparingly.</li>
+<li><strong>Concise</strong> — best for high-volume drive-by commenting
+where you need to be authentic but fast.</li>
+<li><strong>Anecdote</strong> — best on emotional or values-driven
+posts. The personal story signals authenticity. Caveat: the model
+invents the anecdote, so always edit it to fit your actual life before
+sending.</li>
+</ul>
+<p><strong>Rule of thumb:</strong> the LLM gives you the structure. You
+bring the truth. Edit every draft.</p>
+<hr />
+<h2 id="keyboard-shortcuts">6. Keyboard Shortcuts</h2>
+<p>Default: <code>Ctrl+Shift+L</code> (Windows/Linux) /
+<code>Cmd+Shift+L</code> (Mac) drafts a comment for the focused comment
+box.</p>
+<p>Rebind: 1. Open <code>chrome://extensions/shortcuts</code>. 2. Find
+<strong>AI Comment Drafter for LinkedIn → Draft an AI comment</strong>.
+3. Click the input, press your preferred chord.</p>
+<p>If the shortcut conflicts with another extension, Chrome will warn
+you on save.</p>
+<hr />
+<h2 id="forking-rebranding-the-value-add-for-resellers">7. Forking +
+Rebranding (the value-add for resellers)</h2>
+<p>This is why most buyers pick up this pack: they want their own
+LinkedIn-comment extension under their brand. The MIT license permits
+this in full.</p>
+<p><strong>Minimal rebrand checklist:</strong></p>
+<ol type="1">
+<li><p><strong><code>manifest.json</code></strong></p>
+<ul>
+<li><code>name</code> — your brand</li>
+<li><code>description</code> — your positioning</li>
+<li><code>commands.draft-comment.suggested_key</code> — change shortcut
+if you want</li>
+</ul></li>
+<li><p><strong>Icons</strong> — replace
+<code>icons/icon-{16,48,128}.png</code> with your brand. Keep PNG, keep
+the size names. Use ImageMagick:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">magick</span> <span class="at">-size</span> 128x128 xc:<span class="st">&#39;#YOURBG&#39;</span> <span class="at">-fill</span> <span class="st">&#39;#YOURFG&#39;</span> <span class="dt">\</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-font</span> <span class="st">&#39;YourFont&#39;</span> <span class="at">-pointsize</span> 42 <span class="at">-gravity</span> center <span class="at">-annotate</span> +0+0 <span class="st">&#39;AI&#39;</span> <span class="dt">\</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  icons/icon-128.png</span></code></pre></div></li>
+<li><p><strong><code>README.md</code></strong> — replace OblivionLabz /
+Dan Vermillion / dan.vermillion@oblivionlabz.net with your
+equivalents.</p></li>
+<li><p><strong><code>LICENSE</code></strong> — keep the MIT notice; you
+can ADD your own copyright line below ours.</p></li>
+<li><p><strong><code>src/content/styles.css</code></strong> — change the
+button background to your brand color.</p></li>
+<li><p><strong><code>src/options/options.html</code></strong> — change
+<code>--accent</code> and <code>--bg</code> CSS variables to your
+palette.</p></li>
+<li><p><strong><code>src/popup/popup.html</code></strong> — same —
+palette tokens at the top.</p></li>
+<li><p><strong>Optional:</strong> add a custom tone preset specific to
+your audience. Edit <code>src/common/prompts.js</code>.</p></li>
+</ol>
+<p><strong>Bigger rebrand opportunities</strong> (worth more, take
+longer): - Industry-specific tone library (e.g., “VC-style”,
+“founder-letter”, “scientific-paper-tone”) - Add streaming
+token-by-token rendering (UX upgrade) - Add CRM hooks — “log this
+comment + post URL to my Notion / Airtable / Sheets” - Add a free-tier
+rate limit + paid tier auth via ExtensionPay</p>
+<hr />
+<h2 id="submitting-your-fork-to-chrome-web-store">8. Submitting Your
+Fork to Chrome Web Store</h2>
+<p>You will need a Chrome Web Store developer account ($5 one-time
+fee).</p>
+<ol type="1">
+<li>Visit <a href="https://chrome.google.com/webstore/devconsole"
+class="uri">https://chrome.google.com/webstore/devconsole</a>. Pay the
+$5 fee if you haven’t.</li>
+<li>Click <strong>New Item</strong> → upload a zip of your forked
+extension.</li>
+<li>Fill in:
+<ul>
+<li><strong>Description</strong> — what your fork does, who it’s for,
+BYOK note</li>
+<li><strong>Screenshots</strong> — 4-5 screenshots at 1280x800. Use a
+real LinkedIn post (not a competitor’s) plus your options page.</li>
+<li><strong>Promotional images</strong> — 440x280 small tile, 920x680
+large tile, 1400x560 marquee</li>
+<li><strong>Category</strong> — Productivity</li>
+<li><strong>Single Purpose Description</strong> — required as of MV3.
+Sample: <em>“Drafts AI-generated LinkedIn comments for the user to
+review and send.”</em></li>
+<li><strong>Permission justifications</strong> — explain why you need
+<code>storage</code> (saving config), <code>activeTab</code> (reading
+post text on click), and the linkedin host permission.</li>
+</ul></li>
+<li><strong>Privacy practices</strong> disclosure — declare that you
+handle “Authentication info” (the API key) and “Personal communications”
+(the post text) and that you “do NOT sell or transfer to third parties.”
+This is true if you ship the unmodified BYOK design.</li>
+<li>Submit. Review takes 1-7 days for a first listing. Be patient.</li>
+</ol>
+<p><strong>Common rejection reasons + fixes:</strong></p>
+<ul>
+<li><em>“Excessive permissions”</em> — make sure you only request
+<code>storage</code>, <code>activeTab</code>, and the LinkedIn host
+permission. Remove anything else.</li>
+<li><em>“Single purpose violation”</em> — keep the README description
+focused. Don’t pitch it as a multi-tool.</li>
+<li><em>“Misleading description”</em> — be honest about what it does.
+The “drafts only, never auto-posts” framing is what gets approved.</li>
+</ul>
+<hr />
+<h2 id="pricing-your-fork">9. Pricing Your Fork</h2>
+<p>You paid for this source. Here’s what we learned figuring out what
+the market pays.</p>
+<p><strong>Three viable pricing models for an extension
+fork:</strong></p>
+<ol type="1">
+<li><strong>Free + open source</strong> on Web Store, monetize via
+Sponsorware or “buy me a coffee” links — slow, low-revenue, builds
+following.</li>
+<li><strong>Freemium</strong> — free tier with daily draft limit
+(~5/day), paid tier ($5-9/mo) for unlimited via ExtensionPay or Stripe.
+Standard SaaS-on-a-browser-extension play. Realistic ceiling:
+$200-2,000/mo at modest reach.</li>
+<li><strong>Source pack on Gumroad/Lemon Squeezy</strong> — like the
+pack you bought. $19-49 one-time. Lower ceiling than freemium but
+<strong>autonomous</strong> — no support burden, no payment processing,
+no churn analysis.</li>
+</ol>
+<p><strong>Pricing anchors at the time of writing (verify
+yourself):</strong></p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Product</th>
+<th>Model</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MagicReply</td>
+<td>Web Store freemium</td>
+<td>$5/mo Pro</td>
+</tr>
+<tr>
+<td>Engage AI</td>
+<td>Freemium + team plans</td>
+<td>$9.99/mo solo, $24/mo team</td>
+</tr>
+<tr>
+<td>Helper-AI (the inspiration for this pack)</td>
+<td>Gumroad source code</td>
+<td>$29 lifetime</td>
+</tr>
+<tr>
+<td>ChatGPT Writer</td>
+<td>Freemium</td>
+<td>$5/mo</td>
+</tr>
+</tbody>
+</table>
+<p>If you go freemium, <strong>price below Engage AI but above
+MagicReply</strong>. If you sell source, <strong>$19-49 is the working
+range</strong>, with $29 the median based on Gumroad analytics.</p>
+<hr />
+<h2 id="common-dom-update-breakage-how-to-fix-it">10. Common DOM Update
+Breakage + How to Fix It</h2>
+<p>LinkedIn rebuilds its DOM regularly. When the <strong>Draft
+AI</strong> button stops appearing on posts, here’s the fix path.</p>
+<p><strong>Step 1.</strong> Open Chrome DevTools on
+<code>linkedin.com</code>.</p>
+<p><strong>Step 2.</strong> Find a comment textarea by clicking inside
+one. In the DOM panel, identify the element. As of 2026-Q2 it’s:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode html"><code class="sourceCode html"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> role</span><span class="op">=</span><span class="st">&quot;textbox&quot;</span><span class="ot"> contenteditable</span><span class="op">=</span><span class="st">&quot;true&quot;</span><span class="ot"> </span><span class="er">...</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>If LinkedIn changed this, edit <code>COMMENT_BOX_SELECTOR</code> in
+<code>src/content/linkedin.js</code>:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> COMMENT_BOX_SELECTOR <span class="op">=</span> <span class="st">&quot;div[role=textbox][contenteditable=true]&quot;</span><span class="op">;</span></span></code></pre></div>
+<p><strong>Step 3.</strong> Find the post container. Walk up the DOM
+tree from the comment box until you hit a parent that wraps the entire
+post. Look for class names like <code>feed-shared-update-v2</code> or
+<code>update-components-text</code>. Update <code>POST_SELECTORS</code>
+accordingly.</p>
+<p><strong>Step 4.</strong> Find the post text. The visible post body is
+usually inside a child of the post container with a class like
+<code>update-components-text</code> or <code>feed-shared-text</code>.
+Update <code>POST_TEXT_SELECTORS</code>.</p>
+<p><strong>Step 5.</strong> Reload the unpacked extension and verify on
+a feed page.</p>
+<p>The selectors are intentionally a small array of fallbacks so a
+single LinkedIn rename doesn’t break the whole extension — multiple
+options will still match.</p>
+<hr />
+<h2 id="privacy-linkedin-tos-notes">11. Privacy + LinkedIn ToS
+Notes</h2>
+<ul>
+<li><strong>No auto-posting.</strong> The extension only writes into the
+textarea. You always click Send manually. This is the central design
+decision that keeps the extension on the right side of LinkedIn’s
+ToS.</li>
+<li><strong>No profile scraping.</strong> The extension reads only the
+visible post text on the page you’re already viewing. It does NOT
+iterate connections, scrape profile data, or harvest contact info.</li>
+<li><strong>No data leaves the browser</strong> beyond what your chosen
+LLM provider receives — and that’s only when you click Draft AI.</li>
+<li><strong>No telemetry.</strong> The extension makes zero network
+calls except to your chosen LLM provider. Verify by opening Chrome
+DevTools → Network tab.</li>
+</ul>
+<p>LinkedIn’s ToS forbid automated posting and bulk profile scraping.
+This extension does neither. It is the AI equivalent of using Grammarly
+inside a comment box: a writing assistant the user controls.</p>
+<hr />
+<h2 id="license-redistribution-rules">12. License + Redistribution
+Rules</h2>
+<p>The full license is MIT. See <code>LICENSE</code> in the source
+pack.</p>
+<p><strong>You may:</strong> - Modify the source however you want -
+Rebrand and redistribute under your own name - Charge for your
+distribution (free, freemium, paid) - Submit your fork to the Chrome Web
+Store - Bundle the source with other products you sell</p>
+<p><strong>You may NOT:</strong> - Resell this exact unmodified zip on
+Gumroad/Lemon Squeezy as your own work (i.e., don’t be a parasite — ship
+a real fork) - Remove the MIT copyright notice from the source files</p>
+<p><strong>Commercial relicensing</strong> (e.g., you want to ship this
+as part of a closed-source enterprise SaaS without the MIT notice):
+contact <a href="mailto:dan.vermillion@oblivionlabz.net"
+class="email">dan.vermillion@oblivionlabz.net</a>.</p>
+<hr />
+<p><em>End of Setup Guide. Questions: open a GitHub issue at <a
+href="https://github.com/oblivionlabz/ai-linkedin-comment/issues"
+class="uri">https://github.com/oblivionlabz/ai-linkedin-comment/issues</a>.</em></p>
+</body>
+</html>

@@ -1,0 +1,46 @@
+{
+  "manifest_version": 3,
+  "name": "AI Comment Drafter for LinkedIn",
+  "version": "1.0.0",
+  "description": "Drafts thoughtful LinkedIn comments using your own AI key. Never auto-posts. BYOK Anthropic, OpenAI, or Ollama.",
+  "permissions": ["storage", "activeTab"],
+  "host_permissions": ["https://*.linkedin.com/*"],
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "options_ui": {
+    "page": "src/options/options.html",
+    "open_in_tab": true
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "background": {
+    "service_worker": "src/background/sw.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.linkedin.com/*"],
+      "js": ["src/content/linkedin.js"],
+      "css": ["src/content/styles.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "commands": {
+    "draft-comment": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+L",
+        "mac": "Command+Shift+L"
+      },
+      "description": "Draft an AI comment for the focused post"
+    }
+  }
+}

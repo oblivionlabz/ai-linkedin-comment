@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>AI Comment Drafter</title>
+  <style>
+    :root { --bg:#0a0a0a; --fg:#f5f5f5; --muted:#8a8a8a; --border:#2a2a2a; }
+    * { box-sizing: border-box; }
+    html, body { background: var(--bg); color: var(--fg); margin: 0; }
+    body { width: 280px; padding: 16px; font: 13px/1.5 system-ui, -apple-system, sans-serif; }
+    h1 { font-size: 14px; font-weight: 600; margin: 0 0 12px; letter-spacing: -0.01em; }
+    .row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-top: 1px solid var(--border); }
+    .row:first-of-type { border-top: 0; }
+    label { color: var(--muted); font-size: 12px; }
+    select { background: #000; color: var(--fg); border: 1px solid var(--border); border-radius: 3px; padding: 4px 6px; font: inherit; }
+    button { background: var(--fg); color: #000; border: 0; border-radius: 3px; padding: 6px 10px; font: 600 11px/1 inherit; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; }
+    button.secondary { background: transparent; color: var(--fg); border: 1px solid var(--border); }
+    .toggle { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+    .footer { color: var(--muted); font-size: 11px; margin-top: 14px; }
+    a { color: var(--fg); text-decoration: underline dotted var(--muted); text-underline-offset: 3px; }
+  </style>
+</head>
+<body>
+  <h1>AI Comment Drafter</h1>
+
+  <div class="row">
+    <label class="toggle">
+      <input type="checkbox" id="enabled" />
+      <span id="enabledLabel">Enabled</span>
+    </label>
+    <span id="provider" class="footer">—</span>
+  </div>
+
+  <div class="row">
+    <label for="defaultTone">Default tone</label>
+    <select id="defaultTone">
+      <option value="curious">Curious</option>
+      <option value="building">Building-on</option>
+      <option value="disagreeing">Disagreeing</option>
+      <option value="concise">Concise</option>
+      <option value="anecdote">Anecdote</option>
+    </select>
+  </div>
+
+  <div class="row" style="border:0; padding-top: 14px; gap:8px">
+    <button id="open-options">Options</button>
+    <button id="test" class="secondary">Test</button>
+  </div>
+
+  <p class="footer" id="status"></p>
+</body>
+<script src="popup.js"></script>
+</html>
